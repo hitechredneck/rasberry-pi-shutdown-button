@@ -1,0 +1,36 @@
+##exit from emulation station
+##via START button on controller to access command line
+##save code to /home/pi/shutdown.py
+
+import RPi.GPIO as GPIO
+import os
+from time import sleep
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(18,GPIO.IN,pull_up_down=GPIO.PUD_UP)
+
+button_press_timer = 0
+
+while True:
+    if (GPIO.input(18) == 0):
+        button_press_timer += 1
+    else:
+        if (button_press_timer > 3):
+            os.system("sudo shutdown -h now")
+            button_press_timer = 0
+    sleep(0.2) 
+
+
+##open terminal and use this code
+## $ nano /etc/rc.local
+##go to the end of the file
+##right BEFORE "exit 0" and add
+## $ sudo python /home/pi/sutdown.py &
+##save with CTRL+X
+##reboot with
+## $ sudo restart
+
+
+##in use
+##program loops non-stop
+##hold switch for 3 seconds to shutdown|
